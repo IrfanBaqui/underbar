@@ -10,6 +10,13 @@
     return val;
   };
 
+  /*_.identity = function(accumulator,item) {
+    if (accumulator === undefined) return undefined;
+    if (item === undefined) item = accumulator;
+    accumulator = item;
+    return accumulator;
+  };*/
+
   /**
    * COLLECTIONS
    * ===========
@@ -109,7 +116,6 @@
         newArr.push(origItem);
     isPresent = false;
     })
-    console.log(newArr);
     return newArr;
   };
 
@@ -193,12 +199,22 @@
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
+
+    return _.reduce(collection, function(accumulator, item) {
+      if (iterator === undefined) iterator = _.identity;
+      return !!iterator(item) && accumulator;
+    }, true);
     // TIP: Try re-using reduce() here.
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
+    if (collection.length == 0) return false;
+    if (iterator === undefined) iterator = _.identity;
+    return _.reduce(collection, function(accumulator, item) {
+      return !!iterator(item) || accumulator;
+    }, !!iterator((collection[0])));
     // TIP: There's a very clever way to re-use every() here.
   };
 
