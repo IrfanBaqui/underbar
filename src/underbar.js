@@ -296,7 +296,43 @@
   // _.memoize should return a function that, when called, will check if it has
   // already computed the result for the given argument and return that value
   // instead if possible.
+  /*_.memoize = function(func) {
+
+    var temp = func.apply(this,arguments);
+    console.log(this.arguments[0]);
+    console.log(func.arguments[0]);
+    var alreadyCalled = false;
+    //alreadyCalled = {};
+
+    var result;
+
+    // TIP: We'll return a new function that delegates to the old one, but only
+    // if it hasn't been called before.
+    return function() {
+      if (!alreadyCalled) {
+        // TIP: .apply(this, arguments) is the standard way to pass on all of the
+        // infromation from one function call to another.
+        result = func.apply(this, arguments);
+        alreadyCalled = true;
+      }
+      // The new function always returns the originally computed result.
+      return result;
+    };
+  };*/
   _.memoize = function(func) {
+    var varList = {};
+
+
+    return function() {
+      var items = Array.prototype.slice.call(arguments);
+      if (items in varList) {
+        return varList[items];
+      }
+      else {
+        varList[items] = func.apply(this, items);
+        return varList[items];
+      }
+    }
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -306,6 +342,11 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    var args = Array.prototype.slice.call(arguments);
+    var params = args.slice(2);
+    setTimeout(function() {
+      func.apply(this, params);
+    },wait);
   };
 
 
@@ -320,6 +361,21 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var arr = Array.prototype.slice.apply(array);
+    var index = arr.length - 1;
+
+    while(index !== 0) {
+      var random = Math.floor(Math.random() * index);
+      var temp = arr[index];
+      arr[index] = arr[random];
+      arr[random] = temp;
+      console.log(arr);
+
+      index -= 1;
+    }
+    console.log(arr);
+    console.log(array);
+    return arr;
   };
 
 
